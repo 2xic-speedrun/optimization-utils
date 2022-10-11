@@ -6,8 +6,16 @@ class State:
         self.state = deepcopy(state)
 
     @abc.abstractproperty
-    def possible_actions_count(self):
+    def possible_actions(self):
         pass
+
+    @abc.abstractproperty
+    def action_space(self):
+        pass
+
+    @property
+    def possible_actions_count(self):
+        return len(self.possible_actions)
 
     @abc.abstractproperty
     def is_terminator_state(self):

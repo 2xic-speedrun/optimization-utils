@@ -6,7 +6,11 @@ class TicTacToeState(State):
         super().__init__(tic_tac_toe)
 
     @property
-    def possible_actions_count(self):
+    def action_space(self):
+        return self.state.action_space
+
+    @property
+    def possible_actions(self):
         return self.state.legal_actions
 
     @property
@@ -22,3 +26,4 @@ class TicTacToeState(State):
     def reward(self):
         if self.state.winner is not None:
             return self.state.winner
+        return 0

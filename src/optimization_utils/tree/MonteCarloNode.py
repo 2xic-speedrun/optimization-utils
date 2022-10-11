@@ -1,25 +1,35 @@
 
+from typing import Dict
 from .State import State
 import random
+
 
 class MonteCarloNode:
     def __init__(self, parent, state: State):
         self.state = state
-        self.children = {
+        self.children:Dict[int, MonteCarloNode] = {
 
         }
         self.parent = parent
-        self.unexplored_nodes = self.state.possible_actions_count
+        self.unexplored_nodes = self.state.possible_actions
+        self.action_space = self.state.action_space
+
+        # parameters
+        self.T = 0.25
 
         # metadata
         self.score = 0
+        self.visit_count = 0
+        self.mean_value = 0
+        self.reward = 0
 
     def select(self):
         if len(self.unexplored_nodes):
             index = random.randint(0, len(self.unexplored_nodes) - 1)
             action = self.unexplored_nodes[index]
             if not action in self.children:
-                self.children[action] = MonteCarloNode(self, self.state.transition(action))
+                self.children[action] = MonteCarloNode(
+                    self, self.state.transition(action))
                 self.unexplored_nodes.remove(action)
             return self.children[action]
         else:
@@ -31,10 +41,29 @@ class MonteCarloNode:
             self.backpropagation(new_node.state.reward)
         else:
             new_node.expand()
-         
+
     def backpropagation(self, R):
         current_node = self
+
         while current_node is not None:
-            if R is not None:
-                current_node.score += R
+            current_node.score += R
+            self.mean_value = ((
+                current_node.visit_count * self.mean_value
+            ) + R) / (self.visit_count + 1)
+            current_node.visit_count = current_node.visit_count + 1
             current_node = current_node.parent
+
+    @property
+    def policy(self):
+        visits = [0, ] * self.action_space
+        for key, value in self.children.items():
+            visits[key] = value.visit_count ** (1/self.T)
+        sum_visits = sum(visits)
+        return [(v/sum_visits if v != 0 else 0) for v in visits]
+
+    @property
+    def visits(self):
+        visits = [0, ] * self.action_space
+        for key, value in self.children.items():
+            visits[key] = value.visit_count
+        return visits

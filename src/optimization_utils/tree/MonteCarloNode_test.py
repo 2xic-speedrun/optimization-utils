@@ -19,11 +19,12 @@ class TestMonteCarloNode(unittest.TestCase):
             TicTacToeState(tic_tac_toe)
         )
         # could select a path result in draw, so we do a few rollout
-        for i in range(5):
+        for _ in range(5):
             tree.step()
             if tree.root.score != 0:
                 break
         assert tree.root.score != 0
+        assert tree.muzero_action
 
     def tic_tac_toe_select_best_action(self):
         tic_tac_toe = TicTacToe()
@@ -36,6 +37,7 @@ class TestMonteCarloNode(unittest.TestCase):
             TicTacToeState(tic_tac_toe)
         )
         assert 6 == tree.get_action()
+        assert tree.muzero_action
 
 
 if __name__ == '__main__':

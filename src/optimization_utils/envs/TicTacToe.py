@@ -3,11 +3,12 @@ import numpy as np
 class TicTacToe:
     def __init__(self, n=3) -> None:
         self.state = np.zeros((n, n))
-        # player 1 and -
+        # player 1 and -1
         self.player = 1
         self.legal_actions = list(range(n * n))
         self.n = n
         self.done = False
+        self.action_space = n * n
 
     def play(self, action):
         if self.done:
