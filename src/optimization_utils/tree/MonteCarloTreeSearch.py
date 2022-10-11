@@ -1,4 +1,4 @@
-from src.optimization_utils.tree.MonteCarloNode import MonteCarloNode
+from optimization_utils.tree.MonteCarloNode import MonteCarloNode
 import numpy as np
 
 
@@ -10,7 +10,7 @@ class MonteCarloTreeSearch:
         current_node = self.root
         while not current_node.state.is_terminator_state:
             current_node = current_node.select()
-
+        
         if current_node.state.is_terminator_state:
             current_node = current_node.backpropagation(
                 current_node.state.reward)
@@ -21,11 +21,12 @@ class MonteCarloTreeSearch:
         for _ in range(iterations):
             self.step()
 
-        child = [(action, node.score)
+        child_nodes = [(action, node.score)
                  for action, node in self.root.children.items()]
-        child = sorted(child, key=lambda x: x[1])
+        
+        child_nodes = sorted(child_nodes, key=lambda x: x[1])
 
-        return child[0][0]
+        return child_nodes[0][0]
 
     """
     Used for muzero, should probably be moved

@@ -33,7 +33,7 @@ class MonteCarloNode:
                 self.unexplored_nodes.remove(action)
             return self.children[action]
         else:
-            return random.sample(self.children.values(), k=1)[0]
+            return random.sample(list(self.children.values()), k=1)[0]
 
     def expand(self):
         new_node = self.select()

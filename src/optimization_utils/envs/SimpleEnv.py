@@ -7,6 +7,8 @@ Simple environment
 class SimpleEnv:
     def __init__(self) -> None:
         self.reset()
+        self.legal_actions = [0, 1]
+        self.action_space = 2
 
     def reset(self):
         self.env:torch.Tensor = torch.tensor([0, 0])
@@ -32,6 +34,10 @@ class SimpleEnv:
             # gamma = 1 for now
             torch.tensor([1])
         )
+
+    @property
+    def state(self):
+        return self.env
 
     def done(self):
         return self.timeout < 0
