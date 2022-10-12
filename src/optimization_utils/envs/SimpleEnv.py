@@ -22,6 +22,7 @@ class SimpleEnv:
         reward = torch.tensor([0])
         if action == self.index:
             reward = torch.tensor([1])
+        assert action < self.action_space
 
         self.env[self.index] = 0
         self.index = (self.index + 1) % 2
