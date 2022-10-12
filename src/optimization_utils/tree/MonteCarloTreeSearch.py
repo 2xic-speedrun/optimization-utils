@@ -3,8 +3,9 @@ import numpy as np
 
 
 class MonteCarloTreeSearch:
-    def __init__(self, root_state) -> None:
-        self.root = MonteCarloNode(None, root_state)
+    def __init__(self, root_state, node=MonteCarloNode, **kwargs) -> None:
+        self.root = node(None, root_state, **kwargs)
+        self.iterations = 0
 
     def step(self):
         current_node = self.root
@@ -16,6 +17,7 @@ class MonteCarloTreeSearch:
                 current_node.state.reward)
         else:
             current_node = current_node.expand()
+        self.iterations += 1
 
     def get_action(self, iterations=1000):
         for _ in range(iterations):
@@ -33,28 +35,10 @@ class MonteCarloTreeSearch:
     """
     @property
     def muzero_policy(self):
+        assert self.iterations > 0
         return self.root.policy
 
     @property
-    def muzero_action(self):
-        action_policy = [0, ] * self.root.action_space
-        nodes_policy = self.root.policy
-        nodes_visit_counts = self.root.visits
-
-        c_1 = 1.25
-        c_2 = 19_625
-
-        for action, node in self.root.children.items():
-            influence = (
-                c_1 + np.log(
-                    sum(nodes_visit_counts) + c_2 + 1
-                ) /
-                c_2
-            )
-            action_policy[action] = node.mean_value + nodes_policy[action] * (
-                np.sqrt(sum(nodes_visit_counts))
-            ) / (
-                1 + nodes_visit_counts[action]
-            ) * influence
-
-        return np.argmax(action_policy)
+    def muzero_value(self):
+        assert self.iterations > 0
+        return 1

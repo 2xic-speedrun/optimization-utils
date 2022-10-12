@@ -3,7 +3,6 @@ from typing import Dict
 from .State import State
 import random
 
-
 class MonteCarloNode:
     def __init__(self, parent, state: State):
         self.state = state
@@ -23,12 +22,15 @@ class MonteCarloNode:
         self.mean_value = 0
         self.reward = 0
 
+    def get_instance_type(self):
+        return MonteCarloNode
+
     def select(self):
         if len(self.unexplored_nodes):
             index = random.randint(0, len(self.unexplored_nodes) - 1)
             action = self.unexplored_nodes[index]
             if not action in self.children:
-                self.children[action] = MonteCarloNode(
+                self.children[action] = self.get_instance_type()(
                     self, self.state.transition(action))
                 self.unexplored_nodes.remove(action)
             return self.children[action]

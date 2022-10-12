@@ -1,9 +1,10 @@
 import abc
 from copy import deepcopy
+import torch
 
 class State:
     def __init__(self, state) -> None:
-        self.state = deepcopy(state)
+        self.state = deepcopy(state) if not torch.is_tensor(state) else state
 
     @abc.abstractproperty
     def possible_actions(self):

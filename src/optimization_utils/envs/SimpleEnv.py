@@ -15,6 +15,7 @@ class SimpleEnv:
         self.index = 0
         self.env[self.index] = 1
         self.timeout = 10
+        return self
 
     def step(self, action):
         env = self.env.clone()

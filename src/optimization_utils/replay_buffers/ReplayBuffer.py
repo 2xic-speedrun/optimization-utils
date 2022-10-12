@@ -4,7 +4,7 @@ import numpy as np
 from .priority.uniform import uniform_priority
 
 
-state = namedtuple('state_representation', 'state reward action metadata')
+state = namedtuple('state_representation', 'state reward action metadata id')
 
 class ReplayBuffer:
     def __init__(self, state=state, n=10_000, priority=uniform_priority) -> None:
@@ -13,13 +13,22 @@ class ReplayBuffer:
         self.state = state
         self.priority = priority
         
-    def push(self, state, reward, action, metadata={}):
+    def push(self, state, reward, action, metadata={}, id=-1):
         self.history.append(self.state(
             state=state,
             reward=reward,
             action=action,
-            metadata=metadata
+            metadata=metadata,
+            id=-1
         ))
+
+    # TODO: This should probably be written another way.
+    #       This way is inefficient.
+    def sample_trajectory(self):
+        sample_id = self.sample().id
+        return [
+            i for i in self.history if i.id == sample_id
+        ]
 
     def sample(self):
         p = [self.priority(i) for i in self.history]
