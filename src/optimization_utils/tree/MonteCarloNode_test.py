@@ -4,11 +4,12 @@ from optimization_utils.envs.SimpleEnv import SimpleEnv
 from optimization_utils.tree.MuzeroMonteCarloNode import MuzeroMonteCarloNode
 from optimization_utils.tree.MuzeroSimpleEnvState import MuzeroSimpleEnvState
 
-from src.optimization_utils.tree.MonteCarloTreeSearch import MonteCarloTreeSearch
-from src.optimization_utils.tree.State import State
-from src.optimization_utils.tree.TicTacToeState import TicTacToeState
+from optimization_utils.tree.MonteCarloTreeSearch import MonteCarloTreeSearch
+from optimization_utils.tree.State import State
+from optimization_utils.tree.TicTacToeState import TicTacToeState
 
 from ..envs.TicTacToe import TicTacToe
+import torch
 
 
 class TestMonteCarloNode(unittest.TestCase):
@@ -44,10 +45,13 @@ class TestMonteCarloNode(unittest.TestCase):
 
     def test_should_be_possible_to_select_another_node_type(self):
         simple_state_env = SimpleEnv()
+
         def dynamics_function(state, action): return (1, None)
+        def predictor_function(state): return (torch.rand((1, 2)), torch.rand((1, 1)))
 
         tree = MonteCarloTreeSearch(
             MuzeroSimpleEnvState(simple_state_env, dynamics=dynamics_function,
+                                 predictor=predictor_function,
                                  legal_actions=simple_state_env.legal_actions, action_space=simple_state_env.action_space),
             node=MuzeroMonteCarloNode,
         )
@@ -57,6 +61,26 @@ class TestMonteCarloNode(unittest.TestCase):
         assert tree.get_action() is not None
         assert tree.root.muzero_action is not None
 
+    
+    def test_muzero_montecarlo_node_should_update(self):
+        simple_state_env = SimpleEnv()
+
+        def dynamics_function(state, action): return (1, None)
+        def predictor_function(state): return (torch.zeros((1, 2)), torch.rand((1, 1)))
+
+        tree = MonteCarloTreeSearch(
+            MuzeroSimpleEnvState(simple_state_env, dynamics=dynamics_function,
+                                 predictor=predictor_function,
+                                 legal_actions=simple_state_env.legal_actions, action_space=simple_state_env.action_space),
+            node=MuzeroMonteCarloNode,
+        )
+        # Even if policy outputs [0,0] we should do some exploring ? 
+        # Or is the entire idea that this is set by the root, and effects the children ? 
+        for _ in range(300):
+            tree.step()
+        assert 0 < tree.root.policy[0]
+        assert 0 < tree.root.policy[1]
+#        assert tree.root.policy is None
 
 if __name__ == '__main__':
     unittest.main()

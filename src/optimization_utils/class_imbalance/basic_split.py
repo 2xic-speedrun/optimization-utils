@@ -19,7 +19,7 @@ def basic_split(X, y, shuffle=True, max_per_class=1000):
     X_new = np.zeros((lowest_class * (classes), ) + X.shape[1:], dtype=X.dtype)
     y_new = np.zeros((lowest_class * (classes)))
 
-    print(distr_classes)
+    #print(distr_classes)
 
     new_distr = np.zeros(((classes)))
     new_index = 0
@@ -30,7 +30,7 @@ def basic_split(X, y, shuffle=True, max_per_class=1000):
             y_new[new_index] = class_id
             new_distr[class_id] += 1
             new_index += 1
-    print(np.histogram(y_new, bins=labels_split)[0])
+    #print(np.histogram(y_new, bins=labels_split)[0])
 
     if shuffle:
         indices = np.arange(X_new.shape[0])

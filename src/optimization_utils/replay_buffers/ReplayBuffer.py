@@ -19,7 +19,7 @@ class ReplayBuffer:
             reward=reward,
             action=action,
             metadata=metadata,
-            id=-1
+            id=id
         ))
 
     # TODO: This should probably be written another way.
