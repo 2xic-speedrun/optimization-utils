@@ -1,7 +1,6 @@
 from collections import defaultdict
-from curses import meta
 from typing import Any
-
+import torch
 
 class Diagnostics:
     def __init__(self) -> None:
@@ -27,10 +26,12 @@ class Diagnostics:
 
         string_metadata = ""
         for key, value in metadata.items():
+            value = self._make_printable(value)
             string_metadata += f"{key} : {value}\t"
         
         for key, value in self.key_values.items():
-            string_metadata += f"{key} : {len(value)}"
+            value = len(value)
+            string_metadata += f"{key} : {value}"
 
         print(f"\t{epoch} " + string_metadata )
 
@@ -40,6 +41,11 @@ class Diagnostics:
 
     def isValueChanging(self, key, value: Any):
         self.key_values[key][value] = 1
+
+    def _make_printable(self, value):
+        if torch.is_tensor(value) and len(value.shape) == 1:
+            return value.item()
+        return value
 
     """
     TODO: 
