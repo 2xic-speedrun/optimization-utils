@@ -23,6 +23,14 @@ class SimplePlot:
                     )
                     if plot.legend:
                         ax.legend(loc="upper left")
+                    if plot.title:
+                        ax.set_title(plot.title)
+                    if plot.x_text:
+                        ax.set_xlabel(plot.x_text)
+                    if plot.x_text:
+                        ax.set_ylabel(plot.y_text)
+                    if plot.ylim:
+                        ax.set_ylim(*plot.ylim)
                 else:
                     raise Exception("Unknown plotting type")
 
