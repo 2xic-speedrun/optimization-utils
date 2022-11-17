@@ -4,7 +4,7 @@ import numpy as np
 from .priority.uniform import uniform_priority
 
 
-state = namedtuple('state_representation', 'state reward action metadata id')
+state = namedtuple('state_representation', 'state reward action metadata is_last_state id')
 
 class ReplayBuffer:
     def __init__(self, state=state, n=10_000, priority=uniform_priority) -> None:
@@ -13,12 +13,13 @@ class ReplayBuffer:
         self.state = state
         self.priority = priority
         
-    def push(self, state, reward, action, metadata={}, id=-1):
+    def push(self, state, reward, action, is_last_state=False, metadata={}, id=-1):
         self.history.append(self.state(
             state=state,
             reward=reward,
             action=action,
             metadata=metadata,
+            is_last_state=is_last_state,
             id=id
         ))
 

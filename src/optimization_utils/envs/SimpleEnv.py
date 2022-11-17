@@ -9,6 +9,7 @@ class SimpleEnv:
         self.reset()
         self.legal_actions = [0, 1]
         self.action_space = 2
+        self.state_size = 2
 
     def reset(self):
         self.env:torch.Tensor = torch.tensor([0, 0])
@@ -18,7 +19,7 @@ class SimpleEnv:
         return self
 
     def step(self, action):
-        env = self.env.clone()
+        state = self.env.clone()
         reward = torch.tensor([0])
         if action == self.index:
             reward = torch.tensor([1])
@@ -30,7 +31,7 @@ class SimpleEnv:
         self.timeout -= 1
 
         return (
-            env,
+            state,
             reward,
             action,
             # gamma = 1 for now

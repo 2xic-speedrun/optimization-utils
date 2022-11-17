@@ -23,11 +23,9 @@ class Diagnostics:
 
         metadata["action usage"] = actions
         metadata["avg. reward"] = avg_reward
+        metadata["last reward"] = self.rewards[-1]
 
-        string_metadata = ""
-        for key, value in metadata.items():
-            value = self._make_printable(value)
-            string_metadata += f"{key} : {value}\t"
+        string_metadata = self._create_metadata_entry(metadata)
         
         for key, value in self.key_values.items():
             value = len(value)
@@ -39,13 +37,29 @@ class Diagnostics:
         self.key_values.clear()
         self.rewards = []
 
+    def model_print(self, metadata):
+        print(f"\t  {self._create_metadata_entry(metadata)}")
+        print()
+
+    def _create_metadata_entry(self, metadata):
+        string_metadata = ""
+        for key, value in metadata.items():
+            value = self._make_printable(value)
+            string_metadata += f"{key} : {value}\t"
+        return string_metadata
+
     def isValueChanging(self, key, value: Any):
         self.key_values[key][value] = 1
 
     def _make_printable(self, value):
         if torch.is_tensor(value) and len(value.shape) == 1:
-            return value.item()
+            return self._format_float(value.item())
+        elif type(value) == float:
+            return self._format_float(value)
         return value
+
+    def _format_float(self, x):
+        return round(x, 4)
 
     """
     TODO: 

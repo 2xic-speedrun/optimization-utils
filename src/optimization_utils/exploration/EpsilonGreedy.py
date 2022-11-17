@@ -11,6 +11,11 @@ class EpsilonGreedy:
     def get_action(self, get_model_best_action):
         if np.random.rand() < self.epsilon:
             action = random.randint(0, self.actions)
-            self.epsilon *= self.decay
+            self._update_epsilon(self.decay)
             return action
         return get_model_best_action()
+
+    def _update_epsilon(self, decay):
+        if self.epsilon_limit < self.epsilon:
+            self.epsilon *= decay
+            
