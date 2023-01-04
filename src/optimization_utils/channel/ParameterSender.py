@@ -1,6 +1,6 @@
 import requests
 
-def send(host, loss=None, accuracy=None, metadata={}):
+def SendParameters(host, loss=None, accuracy=None, metadata={}):
     requests.post(host,json={
         "loss": loss,
         "accuracy": accuracy,
@@ -8,4 +8,4 @@ def send(host, loss=None, accuracy=None, metadata={}):
     })
 
 if __name__ == "__main__":
-    send("http://localhost:8080", loss=10)
+    SendParameters("http://localhost:8080", loss=10)
