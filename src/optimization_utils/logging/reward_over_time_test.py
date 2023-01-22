@@ -1,5 +1,5 @@
 import unittest
-from reward_over_time import RewardOverTime
+from .reward_over_time import RewardOverTime
 
 class RewardOverTimeTest(unittest.TestCase):
 

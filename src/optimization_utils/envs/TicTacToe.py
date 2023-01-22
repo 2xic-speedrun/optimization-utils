@@ -17,6 +17,7 @@ class TicTacToe:
         self.n = n
         self.done = False
         self.action_space = n * n
+     #   self.reward = 0
 
     def soft_apply(self, action):
         state = self.state.copy()
@@ -38,6 +39,10 @@ class TicTacToe:
                 self.play(random.sample(self.legal_actions, k=1)[0])
         else:
             raise Exception(f"Illegal action by {self.player} by action {action}")
+        
+        return (
+            self.winner if self.winner is not None else 0
+        )
 
     def apply_action(self, action, state):
         if action in self.legal_actions:
@@ -61,3 +66,6 @@ class TicTacToe:
             elif abs(sum(self.state[i, :])) == self.n:
                 return self.state[i, :][0]
         return None
+
+    def __str__(self) -> str:
+        return str(self.state)
