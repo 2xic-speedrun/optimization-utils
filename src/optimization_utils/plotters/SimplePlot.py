@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 from .LinePlot import LinePlot
 
-
 class SimplePlot:
     def __init__(self) -> None:
         self.plots = []
@@ -27,12 +26,16 @@ class SimplePlot:
                         ax.set_title(plot.title)
                     if plot.x_text:
                         ax.set_xlabel(plot.x_text)
-                    if plot.x_text:
+                    if plot.y_text:
                         ax.set_ylabel(plot.y_text)
                     if plot.ylim:
                         ax.set_ylim(*plot.ylim)
                 else:
                     raise Exception("Unknown plotting type")
+
+    def legend(self, loc="upper left"):
+        plt.legend(loc=loc)
+        return self
 
     def show(self):
         self.create_plot()
